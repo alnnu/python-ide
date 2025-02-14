@@ -7,15 +7,15 @@ const  clearButtomn = document.getElementById("clearButton")
 async function CreateCompiler() {
 
     let pyodide = await loadPyodide()
-    consoleTab.innerHTML += "<br/>> Ready!"
+    consoleTab.innerHTML += "<br/>>>> Ready!"
     return await pyodide
 }
 
 function addToOutput(value) {
     if(consoleTab.getHTML() === "") {
-        consoleTab.innerHTML += "> " + value
+        consoleTab.innerHTML += ">>> " + value
     } else {
-        consoleTab.innerHTML += "<br/>> " + value
+        consoleTab.innerHTML += "<br/>>>> " + value
     }
 }
 
