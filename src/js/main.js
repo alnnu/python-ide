@@ -12,20 +12,31 @@ async function CreateCompiler() {
 }
 
 function addToOutput(value) {
-    if(consoleTab.getHTML() === "") {
-        consoleTab.innerHTML += ">>> " + value
-    } else {
-        consoleTab.innerHTML += "<br/>>>> " + value
+    for (const valueElement of value) {
+        if(consoleTab.getHTML() === "") {
+            consoleTab.innerHTML += ">>> " + valueElement
+        } else {
+            consoleTab.innerHTML += "<br/>>>> " + valueElement
+        }
     }
+
 }
 
 async function runPy() {
+    const arr = []
     try {
         const pyCompiler = await pyCompilerPromise
-        const output = pyCompiler.runPython(editorTab.textContent)
-        addToOutput(output)
+
+        pyCompiler.setStdout({ batched: (msg) => arr.push(msg) })
+
+        console.log(editorTab.innerText)
+        pyCompiler.runPython(editorTab.innerText)
+
+        addToOutput(arr)
+
     } catch (err) {
-        addToOutput(err)
+        arr.push(err)
+        addToOutput(arr)
     }
 }
 
