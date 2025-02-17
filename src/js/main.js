@@ -1,14 +1,14 @@
-const editorTab = document.getElementById("editor")
+import editorTab from "./editor"
+
 const consoleTab = document.getElementById("console")
 const runButtom = document.getElementById("runButton")
 const  clearButtomn = document.getElementById("clearButton")
 
 
 async function CreateCompiler() {
-
     let pyodide = await loadPyodide()
     consoleTab.innerHTML += "<br/>>>> Ready!"
-    return await pyodide
+    return pyodide
 }
 
 function addToOutput(value) {
@@ -29,8 +29,7 @@ async function runPy() {
 
         pyCompiler.setStdout({ batched: (msg) => arr.push(msg) })
 
-        console.log(editorTab.innerText)
-        pyCompiler.runPython(editorTab.innerText)
+        pyCompiler.runPython(editorTab.state.doc.toString())
 
         addToOutput(arr)
 
