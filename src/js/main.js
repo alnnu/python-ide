@@ -19,18 +19,19 @@ function addToOutput(value) {
 runButtom.addEventListener("click", async () => {
     runButtom.value = "stop"
 
-    const worker = new Worker("./workers/worker.js")
+    const worker = new Worker("./src/js/workers/worker.js")
 
     worker.onmessage = (e) => {
         addToOutput(e.data)
-    }
 
+        runButtom.value = "run"
+    }
     worker.postMessage(editorTab.state.doc.toString())
 
-    runButtom.value = "run"
 })
 
 clearButtomn.addEventListener("click", () => {
     consoleTab.innerHTML = ""
+
 })
 
