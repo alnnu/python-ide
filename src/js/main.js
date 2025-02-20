@@ -1,15 +1,9 @@
-import editorTab from "./editor"
+import editorTab from "./editor.js"
 
 const consoleTab = document.getElementById("console")
 const runButtom = document.getElementById("runButton")
 const  clearButtomn = document.getElementById("clearButton")
 
-
-async function CreateCompiler() {
-    let pyodide = await loadPyodide()
-    consoleTab.innerHTML += "<br/>>>> Ready!"
-    return pyodide
-}
 
 function addToOutput(value) {
     for (const valueElement of value) {
@@ -22,28 +16,16 @@ function addToOutput(value) {
 
 }
 
-async function runPy() {
-    const arr = []
-    try {
-        const pyCompiler = await pyCompilerPromise
-
-        pyCompiler.setStdout({ batched: (msg) => arr.push(msg) })
-
-        pyCompiler.runPython(editorTab.state.doc.toString())
-
-        addToOutput(arr)
-
-    } catch (err) {
-        arr.push(err)
-        addToOutput(arr)
-    }
-}
-
-const pyCompilerPromise = CreateCompiler()
-
 runButtom.addEventListener("click", async () => {
     runButtom.value = "stop"
-    await runPy()
+
+    const worker = new Worker("./workers/worker.js")
+
+    worker.onmessage = (e) => {
+        addToOutput(e.data)
+    }
+
+    worker.postMessage(editorTab.state.doc.toString())
 
     runButtom.value = "run"
 })
