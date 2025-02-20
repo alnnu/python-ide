@@ -14,7 +14,7 @@ self.addEventListener('message', async (e) => {
 
             const pyCompiler = await CreateCompiler()
 
-            pyCompiler.setStdout({ batched: (msg) => arr.push(msg) })
+            pyCompiler.setStdout({ batched: (msg) => arr.push(msg)})
 
             pyCompiler.runPython(code)
 
@@ -31,6 +31,3 @@ self.addEventListener('message', async (e) => {
 
 })
 
-//print("Hello world")
-// for i in range(10):
-//         print(i)
