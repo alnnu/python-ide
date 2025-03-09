@@ -1,33 +1,38 @@
 self.importScripts("https://cdn.jsdelivr.net/pyodide/v0.27.2/full/pyodide.js");
 
+let pyCompiler;
+
+async function CreateCompiler() {
+    pyCompiler = await loadPyodide();
+}
+
 self.addEventListener('message', async (e) => {
 
-    const code = e.data
+    const data = e.data
 
-    async function CreateCompiler() {
-        return await loadPyodide()
-    }
+    if (data === ">>load<<") {
+        await CreateCompiler();
+        postMessage(["read to run"])
+    } else if(data === ">>stop<<") {
 
-    async function runPy(code) {
-        const arr = []
-        try {
+    } else {
+        async function runPy(code) {
+            const arr = []
+            try {
+                pyCompiler.setStdout({ batched: (msg) => arr.push(msg)})
 
-            const pyCompiler = await CreateCompiler()
+                pyCompiler.runPython(code)
 
-            pyCompiler.setStdout({ batched: (msg) => arr.push(msg)})
+            } catch (err) {
+                arr.push(err)
+            }
 
-            pyCompiler.runPython(code)
-
-        } catch (err) {
-            arr.push(err)
+            return(arr)
         }
 
-        return(arr)
+        let output = await runPy(data)
+
+        postMessage(output)
     }
-
-    let output = await runPy(code)
-
-    postMessage(output)
-
 })
 
