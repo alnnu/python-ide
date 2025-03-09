@@ -16,13 +16,20 @@ function addToOutput(value) {
             consoleTab.innerHTML += "<br/>>>> " + valueElement
         }
     }
-
 }
 
 
 runButtom.addEventListener("click", async () => {
-    runButtom.value = "stop"
-    worker.postMessage(editorTab.state.doc.toString())
+
+    if(runButtom.value.toString() === "run") {
+        runButtom.value = "stop"
+        worker.postMessage(editorTab.state.doc.toString())
+    }else if (runButtom.value === "stop") {
+        worker.postMessage(">>stop<<")
+    }else {
+        alert("wait to the compiler to be read")
+    }
+
 
 })
 
@@ -33,6 +40,5 @@ worker.onmessage = (e) => {
 
 clearButtomn.addEventListener("click", () => {
     consoleTab.innerHTML = ""
-
 })
 
