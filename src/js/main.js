@@ -25,6 +25,7 @@ function addToOutput(value) {
 runButtom.addEventListener("click", async () => {
 
     if(runButtom.value.toString() === "run") {
+
         Atomics.store(interruptBuffer, 0, 0)
 
         runButtom.value = "stop"
@@ -35,8 +36,11 @@ runButtom.addEventListener("click", async () => {
 
         Atomics.store(interruptBuffer, 0, 2)
 
-        addToOutput(["code execution stopped"])
-        runButtom.value = "run"
+        addToOutput(["code execution is stopping"])
+
+        runButtom.disabled = true
+
+        runButtom.value = "stopping"
 
     }else {
         alert("wait to the compiler to be read")
@@ -46,6 +50,8 @@ runButtom.addEventListener("click", async () => {
 worker.onmessage = (e) => {
     addToOutput(e.data)
     runButtom.value = "run"
+
+    runButtom.disabled = false
 }
 
 clearButtomn.addEventListener("click", () => {
