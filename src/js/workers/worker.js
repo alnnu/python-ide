@@ -25,7 +25,7 @@ self.addEventListener('message', async (e) => {
                 pyCompiler.runPython(code)
 
             } catch (err) {
-                arr.push(err)
+                arr.push(err.toString())
             }
             return(arr)
         }
