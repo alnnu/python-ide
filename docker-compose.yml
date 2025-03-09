@@ -1,0 +1,9 @@
+services:
+  web:
+    image: nginx
+    volumes:
+      - ./default.conf:/etc/nginx/conf.d/default.conf
+      - ./index.html:/usr/share/nginx/index.html
+      - ./src/:/usr/share/nginx/src
+    ports:
+      - 80:80

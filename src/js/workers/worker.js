@@ -1,21 +1,22 @@
 self.importScripts("https://cdn.jsdelivr.net/pyodide/v0.27.2/full/pyodide.js");
 
-let pyCompiler;
+let pyCompiler
 
-async function CreateCompiler() {
-    pyCompiler = await loadPyodide();
+async function CreateCompiler(interruptBuffer) {
+    pyCompiler = await loadPyodide()
+    pyCompiler.setInterruptBuffer(interruptBuffer);
 }
 
 self.addEventListener('message', async (e) => {
 
     const data = e.data
 
-    if (data === ">>load<<") {
-        await CreateCompiler();
-        postMessage(["read to run"])
-    } else if(data === ">>stop<<") {
+    if (data.cmd === "load") {
 
-    } else {
+        await CreateCompiler(data.interruptBuffer);
+        postMessage(["read to run"])
+
+    }else if(data.cmd === "run"){
         async function runPy(code) {
             const arr = []
             try {
@@ -26,11 +27,10 @@ self.addEventListener('message', async (e) => {
             } catch (err) {
                 arr.push(err)
             }
-
             return(arr)
         }
 
-        let output = await runPy(data)
+        let output = await runPy(data.code)
 
         postMessage(output)
     }
