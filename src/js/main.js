@@ -31,9 +31,7 @@ runButtom.addEventListener("click", async () => {
 
         Atomics.store(interruptBuffer, 0, 2)
 
-        runButtom.value = "stopping"
-
-        runButtom.disabled = true
+        changeRunButton("stopping", true)
 
     }else {
         alert("wait to the compiler to be read")
@@ -43,10 +41,11 @@ runButtom.addEventListener("click", async () => {
 function readStringFromBuffer(uint32Array) {
     const decoder = new TextDecoder()
 
-    consoleTab.innerHTML += ">>> " + decoder.decode(uint32Array.slice(0, uint32Array.length - 1)) + "<br/>"
+    consoleTab.innerHTML += ">>> " + decoder.decode(uint32Array.slice(0, uint32Array.length)) + "<br/>"
 
 
-    Atomics.store(output,uint32Array.length - 1 , 0);
+    for(let i = 0; i < uint32Array.length; i++)
+        Atomics.store(output, i, 0);
 
     Atomics.notify(output,uint32Array.length - 1)
 }
@@ -54,21 +53,23 @@ function readStringFromBuffer(uint32Array) {
 
 worker.onmessage = (e) => {
 
-    readStringFromBuffer(output)
-
-
-    if(e.data === "finished" || e.data === "loaded") {
-        runButtom.value = "run"
-
-        runButtom.disabled = false
+    if(e.data === "finished") {
+        changeRunButton("run", false)
+    }else if( e.data === "loaded"){
+        changeRunButton("run", false)
+        readStringFromBuffer(output)
+    }else {
+        readStringFromBuffer(output)
     }
-
-
-
 }
 
 clearButtomn.addEventListener("click", () => {
     consoleTab.innerHTML = ""
 })
+
+function changeRunButton(name, disableb) {
+    runButtom.value = name
+    runButtom.disabled = disableb
+}
 
 
