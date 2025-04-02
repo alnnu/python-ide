@@ -6,4 +6,5 @@ services:
       - ./index.html:/usr/share/nginx/index.html
       - ./src/:/usr/share/nginx/src
     ports:
-      - 80:80
+      - 80:8
+      
